@@ -19,6 +19,7 @@ const initialState = {
   isError: false,
   isLoading: false,
   errorMessage: "",
+  checkAvailablitityResponse: [],
 };
 
 export const continueWithGoogle = createAsyncThunk(
@@ -66,6 +67,51 @@ export const onLogout = createAsyncThunk("se/onLogout", async (thunkAPI) => {
   }
 });
 
+export const checkAvailablitity = createAsyncThunk(
+  "se/checkAvailablitity",
+  async (
+    { trainNo, classType, quota, fromStationCode, toStationCode, date },
+    thunkAPI
+  ) => {
+    return [
+      {
+        total_fare: 1795,
+        date: "25-11-2022",
+        confirm_probability_percent: "",
+        confirm_probability: "",
+        current_status: "NOT AVAILABLE.",
+      },
+      {
+        total_fare: 1795,
+        date: "26-11-2022",
+        confirm_probability_percent: "96",
+        confirm_probability: "High",
+        current_status: "RLWL27/WL25.",
+      },
+      {
+        total_fare: 475,
+        date: "27-11-2022",
+        current_status: "AVAILABLE-0095.",
+      },
+      {
+        total_fare: 475,
+        date: "28-11-2022",
+        current_status: "AVAILABLE-0108.",
+      },
+      {
+        total_fare: 475,
+        date: "29-11-2022",
+        current_status: "AVAILABLE-0108.",
+      },
+      {
+        total_fare: 475,
+        date: "30-11-2022",
+        current_status: "AVAILABLE-0108.",
+      },
+    ];
+  }
+);
+
 const se = createSlice({
   name: "se",
   initialState,
@@ -108,6 +154,23 @@ const se = createSlice({
       state.errorMessage = "";
     },
     [onLogout.rejected]: (state, { payload }) => {
+      state.isError = true;
+      state.isLoading = false;
+      state.errorMessage = payload;
+    },
+
+    [checkAvailablitity.fulfilled]: (state, { payload }) => {
+      state.isError = false;
+      state.isLoading = false;
+      state.errorMessage = "";
+      state.checkAvailablitityResponse = payload;
+    },
+    [checkAvailablitity.pending]: (state, action) => {
+      state.isLoading = true;
+      state.isError = false;
+      state.errorMessage = "";
+    },
+    [checkAvailablitity.rejected]: (state, { payload }) => {
       state.isError = true;
       state.isLoading = false;
       state.errorMessage = payload;

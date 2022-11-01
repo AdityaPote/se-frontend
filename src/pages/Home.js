@@ -1,11 +1,10 @@
-import { useDispatch } from "react-redux";
-import { onLogout } from "../features/seSlice";
-import { useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { onLogout, checkAvailablitity } from "../features/seSlice";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { HiLogout } from "react-icons/hi";
 import Select from "react-select";
-import { useState } from "react";
+import AvailabilityCard from "../components/AvailabilityCard";
 
 const quotas = [
   { value: "GN", label: "General" },
@@ -25,7 +24,9 @@ const classes = [
 const Home = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { isLoggedIn } = useSelector((state) => state.se);
+  const { isLoggedIn, checkAvailablitityResponse } = useSelector(
+    (state) => state.se
+  );
 
   useEffect(() => {
     if (!isLoggedIn) {
@@ -42,14 +43,14 @@ const Home = () => {
     trainNo: "",
   });
 
-  const checkAvailability = async () => {
-    console.log(values);
+  const onClickCheckAvailability = async () => {
+    dispatch(checkAvailablitity(values));
   };
 
   return (
-    <section className="w-full h-screen">
-      <div className="p-8 h-full">
-        <div className="max-w-[700px] m-auto h-full flex flex-col items-center justify-between">
+    <section className="w-full min-h-screen">
+      <div className="min-h-screen w-ful">
+        <div className="max-w-[700px] m-auto flex flex-col items-center justify-between min-h-screen p-8 gap-4">
           <div className="w-full flex justify-between items-center">
             <p className="text-4xl font-bold">Book Ticket</p>
             <div
@@ -144,10 +145,14 @@ const Home = () => {
               onChange={(e) => setValues({ ...values, date: e.target.value })}
             />
           </div>
-          <div>{/* cards */}</div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 mt-4 gap-4 w-full ">
+            {checkAvailablitityResponse.map((availability) => {
+              return <AvailabilityCard {...availability} />;
+            })}
+          </div>
           <button
-            className="bg-white text-black w-full mt-4 font-bold p-4 rounded-2xl hover:bg-slate-100"
-            onClick={checkAvailability}
+            className="bg-white text-black w-full font-bold p-4 rounded-2xl hover:bg-slate-100"
+            onClick={onClickCheckAvailability}
           >
             Check Availability
           </button>
