@@ -37,7 +37,7 @@ const Home = () => {
   const [values, setValues] = useState({
     fromStationCode: "",
     toStationCode: "",
-    date: "",
+    date: new Date().toISOString().slice(0, 10),
     quota: "",
     classType: "",
     trainNo: "",
