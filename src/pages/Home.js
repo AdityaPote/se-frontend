@@ -1,10 +1,11 @@
 import { useDispatch, useSelector } from "react-redux";
 import { onLogout, checkAvailablitity } from "../features/seSlice";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { HiLogout } from "react-icons/hi";
 import Select from "react-select";
 import AvailabilityCard from "../components/AvailabilityCard";
+import { setSearchValues } from "../features/seSlice";
 
 const quotas = [
   { value: "GN", label: "General" },
@@ -22,9 +23,10 @@ const classes = [
 ];
 
 const Home = () => {
+  console.log("Home");
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { isLoggedIn, checkAvailablitityResponse } = useSelector(
+  const { isLoggedIn, checkAvailablitityResponse, searchValues } = useSelector(
     (state) => state.se
   );
 
@@ -32,19 +34,18 @@ const Home = () => {
     if (!isLoggedIn) {
       navigate("/login");
     }
-  });
-
-  const [values, setValues] = useState({
-    fromStationCode: "",
-    toStationCode: "",
-    date: new Date().toISOString().slice(0, 10),
-    quota: "",
-    classType: "",
-    trainNo: "",
-  });
-
+  }, [isLoggedIn, navigate]);
   const onClickCheckAvailability = async () => {
-    dispatch(checkAvailablitity(values));
+    await dispatch(checkAvailablitity());
+  };
+
+  const onChange = (e) => {
+    dispatch(
+      setSearchValues({
+        ...searchValues,
+        [e.target.name]: e.target.value,
+      })
+    );
   };
 
   return (
@@ -61,23 +62,38 @@ const Home = () => {
             </div>
           </div>
           <div className="grid grid-cols-3 gap-4 w-full text-sm">
-            <input type="text" className="min-w-14" placeholder="Train no" />
+            <input
+              type="text"
+              className="min-w-14"
+              placeholder="Train no"
+              name="trainNo"
+              value={searchValues.trainNo}
+              onChange={onChange}
+            />
             <Select
               options={classes}
               placeholder="Class"
               className="min-w-14"
-              value={values.classType}
-              onChange={(e) => setValues({ ...values, classType: e.valueOf() })}
+              name="classType"
+              value={searchValues.classType}
+              onChange={(e) =>
+                dispatch(
+                  setSearchValues({
+                    ...searchValues,
+                    classType: e.value,
+                  })
+                )
+              }
               components={{
                 IndicatorSeparator: () => null,
                 DropdownIndicator: () => null,
               }}
               styles={{
-                singleValue: (provided, state) => ({
+                singleValue: (provided) => ({
                   ...provided,
                   color: "white",
                 }),
-                option: (provided, state) => ({
+                option: (provided) => ({
                   ...provided,
                   color: "black",
                 }),
@@ -94,19 +110,26 @@ const Home = () => {
               options={quotas}
               placeholder="Quota"
               className="min-w-14"
-              value={values.quota}
-              onChange={(e) => setValues({ ...values, quota: e.valueOf() })}
+              name="quota"
+              value={searchValues.quota}
+              onChange={(e) =>
+                dispatch(
+                  setSearchValues({
+                    ...searchValues,
+                    quota: e.value,
+                  })
+                )
+              }
               components={{
                 IndicatorSeparator: () => null,
                 DropdownIndicator: () => null,
               }}
               styles={{
-                singleValue: (provided, state) => ({
+                singleValue: (provided) => ({
                   ...provided,
                   color: "white",
                 }),
-                // color of the dropdown menu options
-                option: (provided, state) => ({
+                option: (provided) => ({
                   ...provided,
                   color: "black",
                 }),
@@ -123,31 +146,30 @@ const Home = () => {
               type="text"
               className="min-w-14"
               placeholder="From"
-              value={values.fromStationCode}
-              onChange={(e) =>
-                setValues({ ...values, fromStationCode: e.target.value })
-              }
+              name="fromStationCode"
+              value={searchValues.fromStationCode}
+              onChange={onChange}
             />
             <input
               type="text"
               className="min-w-14"
               placeholder="To"
-              value={values.toStationCode}
-              onChange={(e) =>
-                setValues({ ...values, toStationCode: e.target.value })
-              }
+              name="toStationCode"
+              value={searchValues.toStationCode}
+              onChange={onChange}
             />
             <input
               type="date"
               className="min-w-14"
               placeholder="Date"
-              value={values.date}
-              onChange={(e) => setValues({ ...values, date: e.target.value })}
+              name="date"
+              value={searchValues.date}
+              onChange={onChange}
             />
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 mt-4 gap-4 w-full ">
-            {checkAvailablitityResponse.map((availability) => {
-              return <AvailabilityCard {...availability} />;
+            {checkAvailablitityResponse.map((availability, idx) => {
+              return <AvailabilityCard {...availability} key={idx} />;
             })}
           </div>
           <button

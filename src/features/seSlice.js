@@ -19,6 +19,14 @@ const initialState = {
   isError: false,
   isLoading: false,
   errorMessage: "",
+  searchValues: {
+    trainNo: "",
+    classType: "",
+    quota: "",
+    date: "",
+    fromStationCode: "",
+    toStationCode: "",
+  },
   checkAvailablitityResponse: [],
 };
 
@@ -70,7 +78,7 @@ export const onLogout = createAsyncThunk("se/onLogout", async (thunkAPI) => {
 export const checkAvailablitity = createAsyncThunk(
   "se/checkAvailablitity",
   async (
-    { trainNo, classType, quota, fromStationCode, toStationCode, date },
+    // { trainNo, classType, quota, fromStationCode, toStationCode, date },
     thunkAPI
   ) => {
     return [
@@ -115,7 +123,11 @@ export const checkAvailablitity = createAsyncThunk(
 const se = createSlice({
   name: "se",
   initialState,
-  reducers: {},
+  reducers: {
+    setSearchValues: (state, action) => {
+      state.searchValues = action.payload;
+    },
+  },
   extraReducers: {
     [continueWithGoogle.fulfilled]: (state, action) => {
       state.isLoggedIn = true;
@@ -178,6 +190,6 @@ const se = createSlice({
   },
 });
 
-// export const {} = se.actions;
+export const { setSearchValues } = se.actions;
 
 export default se.reducer;
