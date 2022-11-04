@@ -1,10 +1,11 @@
 import { useDispatch, useSelector } from "react-redux";
-import { onLogout, checkAvailablitity } from "../features/seSlice";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { onLogout, checkAvailablitity, resetValues } from "../features/seSlice";
+import { useState } from "react";
+import { Navigate } from "react-router-dom";
 import { HiLogout } from "react-icons/hi";
 import Select from "react-select";
 import AvailabilityCard from "../components/AvailabilityCard";
+import { useEffect } from "react";
 
 const quotas = [
   { value: "GN", label: "General" },
@@ -23,7 +24,6 @@ const classes = [
 
 const Home = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const { isLoggedIn, checkAvailablitityResponse } = useSelector(
     (state) => state.se
   );
@@ -41,12 +41,6 @@ const Home = () => {
     setsearchValues({ ...searchValues, [e.target.name]: e.target.value });
   };
 
-  useEffect(() => {
-    if (!isLoggedIn) {
-      navigate("/login");
-    }
-  }, [isLoggedIn, navigate]);
-
   const onClickCheckAvailability = () => {
     dispatch(checkAvailablitity({ ...searchValues, quota, classType }));
   };
@@ -54,6 +48,16 @@ const Home = () => {
   const onClickLogout = async () => {
     dispatch(onLogout());
   };
+
+  useEffect(() => {
+    return () => {
+      dispatch(resetValues());
+    };
+  }, []);
+
+  if (!isLoggedIn) {
+    return <Navigate to="/login" />;
+  }
 
   return (
     <section className="w-full min-h-screen">

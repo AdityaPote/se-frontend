@@ -125,6 +125,11 @@ const se = createSlice({
     setSelectedTrain: (state, action) => {
       state.selectedTrain = action.payload;
     },
+    resetValues: (state, action) => {
+      state.selectedTrain = {};
+      state.passengerDetails = [];
+      state.checkAvailablitityResponse = [];
+    },
   },
   extraReducers: {
     [continueWithGoogle.fulfilled]: (state, action) => {
@@ -186,6 +191,6 @@ const se = createSlice({
   },
 });
 
-export const {setSelectedTrain} = se.actions;
+export const { setSelectedTrain, resetValues } = se.actions;
 
 export default se.reducer;
