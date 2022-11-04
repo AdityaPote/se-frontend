@@ -1,11 +1,10 @@
 import { useDispatch, useSelector } from "react-redux";
 import { onLogout, checkAvailablitity } from "../features/seSlice";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { HiLogout } from "react-icons/hi";
 import Select from "react-select";
 import AvailabilityCard from "../components/AvailabilityCard";
-import { setSearchValues } from "../features/seSlice";
 
 const quotas = [
   { value: "GN", label: "General" },
@@ -23,29 +22,37 @@ const classes = [
 ];
 
 const Home = () => {
-  console.log("Home");
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { isLoggedIn, checkAvailablitityResponse, searchValues } = useSelector(
+  const { isLoggedIn, checkAvailablitityResponse } = useSelector(
     (state) => state.se
   );
+
+  const [searchValues, setsearchValues] = useState({
+    fromStationCode: "",
+    toStationCode: "",
+    date: new Date().toISOString().slice(0, 10),
+    trainNo: "",
+  });
+  const [quota, setQuota] = useState("");
+  const [classType, setClassType] = useState("");
+
+  const onChange = (e) => {
+    setsearchValues({ ...searchValues, [e.target.name]: e.target.value });
+  };
 
   useEffect(() => {
     if (!isLoggedIn) {
       navigate("/login");
     }
   }, [isLoggedIn, navigate]);
-  const onClickCheckAvailability = async () => {
-    await dispatch(checkAvailablitity());
+
+  const onClickCheckAvailability = () => {
+    dispatch(checkAvailablitity({ ...searchValues, quota, classType }));
   };
 
-  const onChange = (e) => {
-    dispatch(
-      setSearchValues({
-        ...searchValues,
-        [e.target.name]: e.target.value,
-      })
-    );
+  const onClickLogout = async () => {
+    dispatch(onLogout());
   };
 
   return (
@@ -54,10 +61,7 @@ const Home = () => {
         <div className="max-w-[700px] m-auto flex flex-col items-center justify-between min-h-screen p-8 gap-4">
           <div className="w-full flex justify-between items-center">
             <p className="text-4xl font-bold">Book Ticket</p>
-            <div
-              onClick={() => dispatch(onLogout())}
-              className="cursor-pointer"
-            >
+            <div onClick={onClickLogout} className="cursor-pointer">
               <HiLogout size={25} />
             </div>
           </div>
@@ -75,15 +79,8 @@ const Home = () => {
               placeholder="Class"
               className="min-w-14"
               name="classType"
-              value={searchValues.classType}
-              onChange={(e) =>
-                dispatch(
-                  setSearchValues({
-                    ...searchValues,
-                    classType: e.value,
-                  })
-                )
-              }
+              value={classType}
+              onChange={setClassType}
               components={{
                 IndicatorSeparator: () => null,
                 DropdownIndicator: () => null,
@@ -111,15 +108,8 @@ const Home = () => {
               placeholder="Quota"
               className="min-w-14"
               name="quota"
-              value={searchValues.quota}
-              onChange={(e) =>
-                dispatch(
-                  setSearchValues({
-                    ...searchValues,
-                    quota: e.value,
-                  })
-                )
-              }
+              value={quota}
+              onChange={setQuota}
               components={{
                 IndicatorSeparator: () => null,
                 DropdownIndicator: () => null,

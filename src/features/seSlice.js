@@ -8,6 +8,8 @@ import {
   createUserWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
+import axios from "axios";
+import qs from "qs";
 
 const userName = localStorage.getItem("userName");
 const userId = localStorage.getItem("userId");
@@ -19,14 +21,6 @@ const initialState = {
   isError: false,
   isLoading: false,
   errorMessage: "",
-  searchValues: {
-    trainNo: "",
-    classType: "",
-    quota: "",
-    date: "",
-    fromStationCode: "",
-    toStationCode: "",
-  },
   checkAvailablitityResponse: [],
 };
 
@@ -77,57 +71,55 @@ export const onLogout = createAsyncThunk("se/onLogout", async (thunkAPI) => {
 
 export const checkAvailablitity = createAsyncThunk(
   "se/checkAvailablitity",
-  async (
-    // { trainNo, classType, quota, fromStationCode, toStationCode, date },
-    thunkAPI
-  ) => {
-    return [
-      {
-        total_fare: 1795,
-        date: "25-11-2022",
-        confirm_probability_percent: "",
-        confirm_probability: "",
-        current_status: "NOT AVAILABLE.",
-      },
-      {
-        total_fare: 1795,
-        date: "26-11-2022",
-        confirm_probability_percent: "96",
-        confirm_probability: "High",
-        current_status: "RLWL27/WL25.",
-      },
-      {
-        total_fare: 475,
-        date: "27-11-2022",
-        current_status: "AVAILABLE-0095.",
-      },
-      {
-        total_fare: 475,
-        date: "28-11-2022",
-        current_status: "AVAILABLE-0108.",
-      },
-      {
-        total_fare: 475,
-        date: "29-11-2022",
-        current_status: "AVAILABLE-0108.",
-      },
-      {
-        total_fare: 475,
-        date: "30-11-2022",
-        current_status: "AVAILABLE-0108.",
-      },
-    ];
+  async (searchValues, thunkAPI) => {
+    try {
+      const {
+        fromStationCode,
+        toStationCode,
+        date,
+        quota,
+        classType,
+        trainNo,
+      } = searchValues;
+      if (
+        !trainNo ||
+        !fromStationCode ||
+        !toStationCode ||
+        !quota ||
+        !classType ||
+        !date
+      ) {
+        return thunkAPI.rejectWithValue("Please fill all the fields");
+      }
+      const data = qs.stringify({
+        classType: classType.value,
+        date: date,
+        fromStationCode: fromStationCode,
+        quota: quota.value,
+        toStationCode: toStationCode,
+        trainNo: trainNo,
+      });
+      const config = {
+        method: "post",
+        url: "http://localhost:5000/api/checkavailability",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        data: data,
+      };
+
+      const response = await axios(config);
+      return await response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
   }
 );
 
 const se = createSlice({
   name: "se",
   initialState,
-  reducers: {
-    setSearchValues: (state, action) => {
-      state.searchValues = action.payload;
-    },
-  },
+  reducers: {},
   extraReducers: {
     [continueWithGoogle.fulfilled]: (state, action) => {
       state.isLoggedIn = true;
@@ -172,24 +164,22 @@ const se = createSlice({
     },
 
     [checkAvailablitity.fulfilled]: (state, { payload }) => {
-      state.isError = false;
-      state.isLoading = false;
-      state.errorMessage = "";
       state.checkAvailablitityResponse = payload;
+      state.isError = false;
+      state.errorMessage = "";
     },
     [checkAvailablitity.pending]: (state, action) => {
-      state.isLoading = true;
       state.isError = false;
       state.errorMessage = "";
     },
     [checkAvailablitity.rejected]: (state, { payload }) => {
       state.isError = true;
-      state.isLoading = false;
       state.errorMessage = payload;
+      state.checkAvailablitityResponse = [];
     },
   },
 });
 
-export const { setSearchValues } = se.actions;
+// export const {} = se.actions;
 
 export default se.reducer;
