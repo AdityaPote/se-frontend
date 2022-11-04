@@ -49,12 +49,6 @@ const Home = () => {
     dispatch(onLogout());
   };
 
-  useEffect(() => {
-    return () => {
-      dispatch(resetValues());
-    };
-  }, []);
-
   if (!isLoggedIn) {
     return <Navigate to="/login" />;
   }

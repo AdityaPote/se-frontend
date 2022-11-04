@@ -1,19 +1,29 @@
 import { useSelector, useDispatch } from "react-redux";
-import { Navigate } from "react-router-dom";
-import { onLogout } from "../features/seSlice";
+import { useNavigate } from "react-router-dom";
+import { onLogout, resetValues } from "../features/seSlice";
 import { HiLogout } from "react-icons/hi";
+import { useEffect } from "react";
 
 const Book = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { selectedTrain, isLoggedIn } = useSelector((store) => store.se);
 
-  if (
-    !isLoggedIn ||
-    (Object.keys(selectedTrain).length === 0 &&
-      selectedTrain.constructor === Object)
-  ) {
-    return <Navigate to="/login" />;
-  }
+  useEffect(() => {
+    if (!isLoggedIn) {
+      navigate("/login");
+    }
+    if (
+      Object.keys(selectedTrain).length === 0 &&
+      selectedTrain.constructor === Object
+    ) {
+      navigate("/");
+    }
+
+    return () => {
+      dispatch(resetValues());
+    };
+  }, []);
 
   const onClickLogout = async () => {
     dispatch(onLogout());
