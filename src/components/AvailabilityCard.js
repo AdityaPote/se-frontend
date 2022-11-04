@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { setSelectedTrain } from "../features/seSlice";
 
 const AvailabilityCard = (props) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const { total_fare, date, current_status } = props;
 
   const [canBook, setCanBook] = useState(false);
@@ -25,13 +31,21 @@ const AvailabilityCard = (props) => {
     }
   }, [current_status]);
 
+  const onClickBook = () => {
+    dispatch(setSelectedTrain(props));
+    navigate("/book");
+  };
+
   return (
     <div className={`${style}`}>
       <p>{date}</p>
       <p>Fare: ₹{total_fare}</p>
       <p>{current_status.substr(0, current_status.length - 1)}</p>
       {canBook && (
-        <button className="px-1 py-2 bg-gray-50 rounded-xl text-black font-semibold hover:bg-slate-100">
+        <button
+          className="px-1 py-2 bg-gray-50 rounded-xl text-black font-semibold hover:bg-slate-100"
+          onClick={onClickBook}
+        >
           Book
         </button>
       )}

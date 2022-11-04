@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import Loading from "./pages/Loading";
 import toast, { Toaster } from "react-hot-toast";
 import { useEffect } from "react";
+import Book from "./pages/Book";
 
 const App = () => {
   const { isLoading, isError, errorMessage } = useSelector((state) => state.se);
@@ -26,6 +27,7 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/book" element={<Book />} />
       </Routes>
       <Toaster />
     </div>

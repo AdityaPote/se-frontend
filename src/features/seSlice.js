@@ -22,6 +22,8 @@ const initialState = {
   isLoading: false,
   errorMessage: "",
   checkAvailablitityResponse: [],
+  selectedTrain: {},
+  passengerDetails: [],
 };
 
 export const continueWithGoogle = createAsyncThunk(
@@ -119,7 +121,11 @@ export const checkAvailablitity = createAsyncThunk(
 const se = createSlice({
   name: "se",
   initialState,
-  reducers: {},
+  reducers: {
+    setSelectedTrain: (state, action) => {
+      state.selectedTrain = action.payload;
+    },
+  },
   extraReducers: {
     [continueWithGoogle.fulfilled]: (state, action) => {
       state.isLoggedIn = true;
@@ -180,6 +186,6 @@ const se = createSlice({
   },
 });
 
-// export const {} = se.actions;
+export const {setSelectedTrain} = se.actions;
 
 export default se.reducer;
