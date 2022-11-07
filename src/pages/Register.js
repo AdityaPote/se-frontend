@@ -22,7 +22,7 @@ const Register = () => {
   return (
     <section className="w-full h-screen">
       <div className="p-8 h-full">
-        <div className="max-w-[700px] m-auto h-full flex flex-col items-center justify-between">
+        <div className="max-w-[900px] m-auto h-full flex flex-col items-center justify-between">
           {/* Top three lines */}
           <div className="w-full">
             <p className="font-bold text-4xl">Let's register you.</p>

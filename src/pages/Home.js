@@ -1,11 +1,10 @@
 import { useDispatch, useSelector } from "react-redux";
-import { onLogout, checkAvailablitity, resetValues } from "../features/seSlice";
+import { onLogout, checkAvailablitity } from "../features/seSlice";
 import { useState } from "react";
 import { Navigate } from "react-router-dom";
 import { HiLogout } from "react-icons/hi";
 import Select from "react-select";
 import AvailabilityCard from "../components/AvailabilityCard";
-import { useEffect } from "react";
 
 const quotas = [
   { value: "GN", label: "General" },
@@ -56,7 +55,7 @@ const Home = () => {
   return (
     <section className="w-full min-h-screen">
       <div className="min-h-screen w-ful">
-        <div className="max-w-[700px] m-auto flex flex-col items-center justify-between min-h-screen p-8 gap-4">
+        <div className="max-w-[900px] m-auto flex flex-col items-center justify-between min-h-screen p-8 gap-4">
           <div className="w-full flex justify-between items-center">
             <p className="text-4xl font-bold">Book Ticket</p>
             <div onClick={onClickLogout} className="cursor-pointer">
