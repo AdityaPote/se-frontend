@@ -118,6 +118,20 @@ export const checkAvailablitity = createAsyncThunk(
   }
 );
 
+export const checkout = createAsyncThunk(
+  "se/checkout",
+  async (amount, thunkAPI) => {
+    try {
+      const reponse = await axios.post("http://localhost:5000/api/checkout", {
+        amount,
+      });
+      window.location.assign(reponse.data.url, "__blank");
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
+
 const se = createSlice({
   name: "se",
   initialState,
@@ -187,6 +201,20 @@ const se = createSlice({
       state.isError = true;
       state.errorMessage = payload;
       state.checkAvailablitityResponse = [];
+    },
+
+    [checkout.fulfilled]: (state, action) => {
+      state.isError = false;
+      state.errorMessage = "";
+    },
+    [checkout.pending]: (state, action) => {
+      state.isError = false;
+      state.errorMessage = "";
+      state.isLoading = true;
+    },
+    [checkout.rejected]: (state, { payload }) => {
+      state.isError = true;
+      state.errorMessage = payload;
     },
   },
 });

@@ -1,9 +1,10 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { onLogout, resetValues } from "../features/seSlice";
+import { onLogout } from "../features/seSlice";
 import { HiLogout, HiLockClosed, HiPlus, HiTrash } from "react-icons/hi";
 import { useEffect } from "react";
 import { useState } from "react";
+import axios from "axios";
 
 const Book = () => {
   const navigate = useNavigate();
@@ -21,11 +22,7 @@ const Book = () => {
     ) {
       navigate("/");
     }
-
-    return () => {
-      dispatch(resetValues());
-    };
-  }, [dispatch, isLoggedIn, navigate, selectedTrain]);
+  }, [isLoggedIn, navigate, selectedTrain]);
 
   const onClickLogout = async () => {
     dispatch(onLogout());
@@ -59,6 +56,17 @@ const Book = () => {
       return idx !== index;
     });
     setInputs(copyInputs);
+  };
+
+  const handleOnClickPay = async (amount) => {
+    try {
+      const reponse = await axios.post("http://localhost:5000/api/checkout", {
+        amount,
+      });
+      window.location.assign(reponse.data.url);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -101,7 +109,7 @@ const Book = () => {
             {inputs.map((input, idx) => {
               return (
                 <div
-                  className="w-full flex gap-2 m-auto justify-between items-center"
+                  className="w-full grid gap-4 m-auto justify-between items-center grid-cols-[1fr,1fr] md:flex"
                   key={idx}
                 >
                   <input
@@ -135,9 +143,12 @@ const Book = () => {
               );
             })}
           </div>
-          <button className="bg-white text-black w-full font-bold p-4 rounded-2xl hover:bg-slate-100 align-bottom mt-auto">
+          <button
+            className="bg-white text-black w-full font-bold p-4 rounded-2xl hover:bg-slate-100 align-bottom mt-auto"
+            onClick={() => handleOnClickPay(total_fare * inputs.length)}
+          >
             <div className="flex justify-center items-center gap-2">
-              Pay ₹{total_fare} <HiLockClosed />
+              Pay ₹{total_fare * inputs.length} <HiLockClosed />
             </div>
           </button>
         </div>
