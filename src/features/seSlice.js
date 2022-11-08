@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { auth } from "../firebase";
+import { auth, db } from "../firebase";
+import { getAdditionalUserInfo } from "firebase/auth";
 import {
   GoogleAuthProvider,
   signInWithPopup,
@@ -10,6 +11,7 @@ import {
 } from "firebase/auth";
 import axios from "axios";
 import qs from "qs";
+import { setDoc, doc, getDoc } from "firebase/firestore";
 
 const userName = localStorage.getItem("userName");
 const userId = localStorage.getItem("userId");
@@ -31,7 +33,15 @@ export const continueWithGoogle = createAsyncThunk(
   async (thunkAPI) => {
     try {
       const provider = new GoogleAuthProvider();
-      await signInWithPopup(auth, provider);
+      const response = await signInWithPopup(auth, provider);
+      if (getAdditionalUserInfo(response).isNewUser) {
+        console.log("new user");
+        const docRef = doc(db, "users", auth.currentUser.uid);
+        await setDoc(docRef, {
+          userName: auth.currentUser.displayName,
+          tickets: [],
+        });
+      }
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
     }
@@ -43,6 +53,11 @@ export const register = createAsyncThunk(
   async ({ email, password }, thunkAPI) => {
     try {
       await createUserWithEmailAndPassword(auth, email, password);
+      const docRef = doc(db, "users", auth.currentUser.uid);
+      await setDoc(docRef, {
+        userName: auth.currentUser.displayName,
+        tickets: [],
+      });
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
     }
@@ -120,12 +135,24 @@ export const checkAvailablitity = createAsyncThunk(
 
 export const checkout = createAsyncThunk(
   "se/checkout",
-  async (amount, thunkAPI) => {
+  async ({ amount, passengers }, thunkAPI) => {
     try {
+      const docRef = doc(db, "users", auth.currentUser.uid);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const tickets = docSnap.data().tickets;
+        tickets.push({
+          ...thunkAPI.getState().se.selectedTrain,
+          passengers,
+        });
+        await setDoc(docRef, {
+          tickets: tickets,
+        });
+      }
       const reponse = await axios.post("http://localhost:5000/api/checkout", {
         amount,
       });
-      window.location.assign(reponse.data.url, "__blank");
+      window.location.assign(reponse.data.url);
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
     }

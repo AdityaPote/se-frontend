@@ -4,7 +4,7 @@ import { onLogout } from "../features/seSlice";
 import { HiLogout, HiLockClosed, HiPlus, HiTrash } from "react-icons/hi";
 import { useEffect } from "react";
 import { useState } from "react";
-import axios from "axios";
+import { checkout } from "../features/seSlice";
 
 const Book = () => {
   const navigate = useNavigate();
@@ -56,17 +56,6 @@ const Book = () => {
       return idx !== index;
     });
     setInputs(copyInputs);
-  };
-
-  const handleOnClickPay = async (amount) => {
-    try {
-      const reponse = await axios.post("http://localhost:5000/api/checkout", {
-        amount,
-      });
-      window.location.assign(reponse.data.url);
-    } catch (error) {
-      console.log(error);
-    }
   };
 
   return (
@@ -145,7 +134,14 @@ const Book = () => {
           </div>
           <button
             className="bg-white text-black w-full font-bold p-4 rounded-2xl hover:bg-slate-100 align-bottom mt-auto"
-            onClick={() => handleOnClickPay(total_fare * inputs.length)}
+            onClick={() =>
+              dispatch(
+                checkout({
+                  passengers: inputs,
+                  amount: total_fare * inputs.length,
+                })
+              )
+            }
           >
             <div className="flex justify-center items-center gap-2">
               Pay ₹{total_fare * inputs.length} <HiLockClosed />
