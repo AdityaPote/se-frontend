@@ -5,6 +5,7 @@ import { HiLogout, HiLockClosed, HiPlus, HiTrash } from "react-icons/hi";
 import { useEffect } from "react";
 import { useState } from "react";
 import { checkout } from "../features/seSlice";
+import toast from "react-hot-toast";
 
 const Book = () => {
   const navigate = useNavigate();
@@ -56,6 +57,35 @@ const Book = () => {
       return idx !== index;
     });
     setInputs(copyInputs);
+  };
+
+  const handleOnClickPay = () => {
+    if (inputs.length === 0) {
+      toast.error("Please add atleast one passenger", {
+        duration: 2000,
+      });
+      return;
+    }
+    if (
+      inputs.some((input) => {
+        return (
+          input.name.trim() === "" ||
+          input.age.trim() === "" ||
+          input.gender.trim() === ""
+        );
+      })
+    ) {
+      toast.error("Please fill all the fields", {
+        duration: 2000,
+      });
+      return;
+    }
+    dispatch(
+      checkout({
+        passengers: inputs,
+        amount: total_fare * inputs.length,
+      })
+    );
   };
 
   return (
@@ -134,14 +164,7 @@ const Book = () => {
           </div>
           <button
             className="bg-white text-black w-full font-bold p-4 rounded-2xl hover:bg-slate-100 align-bottom mt-auto"
-            onClick={() =>
-              dispatch(
-                checkout({
-                  passengers: inputs,
-                  amount: total_fare * inputs.length,
-                })
-              )
-            }
+            onClick={handleOnClickPay}
           >
             <div className="flex justify-center items-center gap-2">
               Pay ₹{total_fare * inputs.length} <HiLockClosed />

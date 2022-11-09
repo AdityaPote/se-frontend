@@ -26,6 +26,7 @@ const initialState = {
   checkAvailablitityResponse: [],
   selectedTrain: {},
   passengerDetails: [],
+  history: [],
 };
 
 export const continueWithGoogle = createAsyncThunk(
@@ -35,7 +36,6 @@ export const continueWithGoogle = createAsyncThunk(
       const provider = new GoogleAuthProvider();
       const response = await signInWithPopup(auth, provider);
       if (getAdditionalUserInfo(response).isNewUser) {
-        console.log("new user");
         const docRef = doc(db, "users", auth.currentUser.uid);
         await setDoc(docRef, {
           userName: auth.currentUser.displayName,
@@ -159,6 +159,23 @@ export const checkout = createAsyncThunk(
   }
 );
 
+export const getHistory = createAsyncThunk(
+  "se/getHistory",
+  async (thunkAPI) => {
+    try {
+      const docRef = doc(db, "users", localStorage.getItem("userId"));
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        return await docSnap.data().tickets;
+      } else {
+        return thunkAPI.rejectWithValue("No tickets found");
+      }
+    } catch (error) {
+      return thunkAPI.rejectWithValue("Something went wrong");
+    }
+  }
+);
+
 const se = createSlice({
   name: "se",
   initialState,
@@ -240,6 +257,23 @@ const se = createSlice({
       state.isLoading = true;
     },
     [checkout.rejected]: (state, { payload }) => {
+      state.isError = true;
+      state.errorMessage = payload;
+    },
+
+    [getHistory.fulfilled]: (state, { payload }) => {
+      state.isLoading = false;
+      state.isError = false;
+      state.errorMessage = "";
+      state.history = payload;
+    },
+    [getHistory.pending]: (state, action) => {
+      state.isLoading = true;
+      state.isError = false;
+      state.errorMessage = "";
+    },
+    [getHistory.rejected]: (state, { payload }) => {
+      state.isLoading = false;
       state.isError = true;
       state.errorMessage = payload;
     },

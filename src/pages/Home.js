@@ -1,8 +1,9 @@
 import { useDispatch, useSelector } from "react-redux";
 import { onLogout, checkAvailablitity } from "../features/seSlice";
 import { useState } from "react";
-import { Navigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { HiLogout } from "react-icons/hi";
+import { RiHistoryLine } from "react-icons/ri";
 import Select from "react-select";
 import AvailabilityCard from "../components/AvailabilityCard";
 
@@ -58,8 +59,15 @@ const Home = () => {
         <div className="max-w-[900px] m-auto flex flex-col items-center justify-between min-h-screen p-8 gap-4">
           <div className="w-full flex justify-between items-center">
             <p className="text-4xl font-bold">Book Ticket</p>
-            <div onClick={onClickLogout} className="cursor-pointer">
-              <HiLogout size={25} />
+            <div className="flex gap-4 justify-center items-center">
+              <div onClick={onClickLogout} className="cursor-pointer">
+                <HiLogout size={25} />
+              </div>
+              <div>
+                <Link to="/history">
+                  <RiHistoryLine size={25} />
+                </Link>
+              </div>
             </div>
           </div>
           <div className="grid grid-cols-3 gap-4 w-full text-sm">

@@ -4,12 +4,11 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 const Success = () => {
-  const { selectedTrain } = useSelector((store) => store.se);
+  const { selectedTrain } = useSelector((state) => state.se);
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log(selectedTrain);
     setTimeout(() => {
       navigate("/");
     }, 3000);
