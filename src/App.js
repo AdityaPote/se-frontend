@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import Book from "./pages/Book";
 import Success from "./pages/Success";
 import History from "./pages/History";
+import Ticket from "./pages/Ticket";
 
 const App = () => {
   const { isLoading, isError, errorMessage } = useSelector((state) => state.se);
@@ -32,6 +33,7 @@ const App = () => {
         <Route path="/book" element={<Book />} />
         <Route path="/success" element={<Success />} />
         <Route path="/history" element={<History />} />
+        <Route path="/ticket" element={<Ticket />} />
       </Routes>
       <Toaster />
     </div>

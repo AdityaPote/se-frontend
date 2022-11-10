@@ -2,7 +2,7 @@ import React from "react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { getHistory } from "../features/seSlice";
+import { getHistory, setSelectedTicket } from "../features/seSlice";
 
 const History = () => {
   const navigate = useNavigate();
@@ -16,6 +16,11 @@ const History = () => {
     dispatch(getHistory());
   }, [dispatch, isLoggedIn, navigate]);
 
+  const handleOnClickDiv = (ticket) => {
+    dispatch(setSelectedTicket(ticket));
+    navigate("/ticket");
+  };
+
   return (
     <section className="w-full min-h-screen">
       <div className="min-h-screen w-full">
@@ -26,7 +31,11 @@ const History = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-black">
             {history.map((ticket, idx) => {
               return (
-                <div key={idx} className="bg-white p-8 rounded-xl">
+                <div
+                  key={idx}
+                  className="bg-white p-8 rounded-xl cursor-pointer"
+                  onClick={() => handleOnClickDiv(ticket)}
+                >
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <span className="font-semibold">Train No: </span>

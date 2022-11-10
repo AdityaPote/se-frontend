@@ -27,6 +27,7 @@ const initialState = {
   selectedTrain: {},
   passengerDetails: [],
   history: [],
+  selectedTicket: {},
 };
 
 export const continueWithGoogle = createAsyncThunk(
@@ -183,10 +184,14 @@ const se = createSlice({
     setSelectedTrain: (state, action) => {
       state.selectedTrain = action.payload;
     },
+    setSelectedTicket: (state, action) => {
+      state.selectedTicket = action.payload;
+    },
     resetValues: (state, action) => {
       state.selectedTrain = {};
       state.passengerDetails = [];
       state.checkAvailablitityResponse = [];
+      state.selectedTicket = {};
     },
   },
   extraReducers: {
@@ -277,6 +282,6 @@ const se = createSlice({
   },
 });
 
-export const { setSelectedTrain, resetValues } = se.actions;
+export const { setSelectedTrain, setSelectedTicket, resetValues } = se.actions;
 
 export default se.reducer;
