@@ -13,10 +13,8 @@ const History = () => {
     if (!isLoggedIn) {
       navigate("/login");
     }
-    if (history.length === 0) {
-      dispatch(getHistory());
-    }
-  }, [dispatch, history, isLoggedIn, navigate]);
+    dispatch(getHistory());
+  }, [dispatch, isLoggedIn, navigate]);
 
   return (
     <section className="w-full min-h-screen">

@@ -262,18 +262,15 @@ const se = createSlice({
     },
 
     [getHistory.fulfilled]: (state, { payload }) => {
-      state.isLoading = false;
       state.isError = false;
       state.errorMessage = "";
       state.history = payload;
     },
     [getHistory.pending]: (state, action) => {
-      state.isLoading = true;
       state.isError = false;
       state.errorMessage = "";
     },
     [getHistory.rejected]: (state, { payload }) => {
-      state.isLoading = false;
       state.isError = true;
       state.errorMessage = payload;
     },
