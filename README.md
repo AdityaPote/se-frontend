@@ -1,6 +1,6 @@
 <br />
 <div align="center">
-    <img src="https://cdn-icons-png.flaticon.com/512/5956/5956726.png" alt="Logo" height="80">
+    <img src="https://user-images.githubusercontent.com/80644262/201344598-af4ba3c0-ac94-4cb1-b088-11706624b77d.png" alt="Logo" height="200">
 
 <h3 align="center">Travel Manager</h3>
 
@@ -13,7 +13,7 @@
 
 [![Product Name Screen Shot][product-screenshot]](https://example.com)
 
-Users can create their account, book tickets, and access their bookinh history
+Users can create their account, book tickets, and access their booking history
 
 ### Built With
 
