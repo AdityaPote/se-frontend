@@ -119,7 +119,7 @@ export const checkAvailablitity = createAsyncThunk(
       });
       const config = {
         method: "post",
-        url: "http://localhost:5000/api/checkavailability",
+        url: "/api/checkavailability/",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
         },
@@ -150,7 +150,7 @@ export const checkout = createAsyncThunk(
           tickets: tickets,
         });
       }
-      const reponse = await axios.post("http://localhost:5000/api/checkout", {
+      const reponse = await axios.post("/api/checkout/", {
         amount,
       });
       window.location.assign(reponse.data.url);
