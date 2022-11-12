@@ -1,0 +1,2 @@
+/api/* https://se-travel-manager.cyclic.app/api/:splat 200
+/* /index.html 200  
