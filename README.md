@@ -9,6 +9,30 @@
     <br />
 </div>
 
+## Contributions
+
+1. Ketan Prakash (2020IMT-044)
+```
+Worked on the backend using Express and Node.Js, and created various routes (end points) and controllers (logic).
+```
+
+2. Lovish Dak (2020IMT-050)
+
+```
+Worked on managing different states using Redux Toolkit, and created slice and store for the same.
+```
+3. Aditya Pote (2020IMT-069)
+
+```
+Added firebase authentication during login and register, and database to store the users' and tickets' information.
+```
+
+4. Suyash Vikram Singh (2020IMT-104)
+
+```
+Worked on the frontend, using React and Tailwind CSS, and integrated Stripe for payment gateway.
+```
+
 ## About The Project
 
 [![Product Name Screen Shot][product-screenshot]](https://example.com)
