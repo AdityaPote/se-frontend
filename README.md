@@ -93,6 +93,10 @@ Follow the steps below to get run the app in the local environment.
 
 Enter the card number: 4242 4242 4242 4242 for all orders for a successful transaction.
 
+## Sample
+
+https://user-images.githubusercontent.com/80644262/201514672-81b25b35-16a9-442d-a2d3-5ed8cd28296a.mp4
+
 ## Features
 
 ### Register and log in
